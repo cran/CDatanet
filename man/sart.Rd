@@ -10,7 +10,7 @@ sart(
   Glist,
   theta0 = NULL,
   yb0 = NULL,
-  optimizer = "optim",
+  optimizer = "fastlbfgs",
   npl.ctr = list(),
   opt.ctr = list(),
   print = TRUE,
@@ -36,19 +36,19 @@ does not contain contextual effects (see details).}
 
 \item{yb0}{(optional) expectation of y.}
 
-\item{optimizer}{is either \code{nlm} (referring to the function \link[stats]{nlm}) or \code{optim} (referring to the function \link[stats]{optim}).
+\item{optimizer}{is either \code{fastlbfgs} (L-BFGS optimization method of the package \pkg{RcppNumerical}), \code{nlm} (referring to the function \link[stats]{nlm}), or \code{optim} (referring to the function \link[stats]{optim}).
 Other arguments
-of these functions such as, the control values and the method can be defined through the argument \code{opt.ctr}.}
+of these functions such as, \code{control} and \code{method} can be defined through the argument \code{opt.ctr}.}
 
 \item{npl.ctr}{list of controls for the NPL method (see \code{\link{cdnet}}).}
 
-\item{opt.ctr}{list of arguments of \link[stats]{nlm} or \link[stats]{optim} (the one set in \code{optimizer}) such as control, method, ...}
+\item{opt.ctr}{list of arguments to be passed in \code{optim_lbfgs} of the package \pkg{RcppNumerical}, \link[stats]{nlm} or \link[stats]{optim} (the solver set in \code{optimizer}), such as \code{maxit}, \code{eps_f}, \code{eps_g}, \code{control}, \code{method}, ...}
 
-\item{print}{a boolean indicating if the estimate should be printed at each step.}
+\item{print}{a Boolean indicating if the estimate should be printed at each step.}
 
-\item{cov}{a boolean indicating if the covariance should be computed.}
+\item{cov}{a Boolean indicating if the covariance should be computed.}
 
-\item{RE}{a boolean which indicates if the model if under rational expectation of not.}
+\item{RE}{a Boolean which indicates if the model if under rational expectation of not.}
 
 \item{data}{an optional data frame, list or environment (or object coercible by \link[base]{as.data.frame} to a data frame) containing the variables
 in the model. If not found in data, the variables are taken from \code{environment(formula)}, typically the environment from which \code{sart} is called.}
@@ -63,7 +63,7 @@ A list consisting of:
 \item{details}{outputs as returned by the optimizer.}
 }
 \description{
-Estimate sart model
+\code{sart} is used to estimate peer effects on censored data (see details). The model is presented in Xu and Lee(2015).
 }
 \details{
 \subsection{Model}{
@@ -132,6 +132,9 @@ out     <- sart(formula = yt ~ x1 + x2, optimizer = "nlm",
                   contextual = TRUE, Glist = Glist, data = data)
 summary(out)
 }
+}
+\references{
+Xu, X., & Lee, L. F. (2015). Maximum likelihood estimation of a spatial autoregressive Tobit model. \emph{Journal of Econometrics}, 188(1), 264-280, \doi{10.1016/j.jeconom.2015.05.004}.
 }
 \seealso{
 \code{\link{sar}}, \code{\link{cdnet}}, \code{\link{simsart}}.

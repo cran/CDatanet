@@ -2,6 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
+#include <RcppEigen.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -97,6 +98,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
     rcpp_result_gen = Rcpp::wrap(fy(yst, maxyst, delta, n, Rbar));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fmeffects
+List fmeffects(const int& n, const arma::vec& delta, const int& Rbar, const NumericVector& ZtLambda, const arma::vec& lbeta);
+RcppExport SEXP _CDatanet_fmeffects(SEXP nSEXP, SEXP deltaSEXP, SEXP RbarSEXP, SEXP ZtLambdaSEXP, SEXP lbetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type ZtLambda(ZtLambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lbeta(lbetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmeffects(n, delta, Rbar, ZtLambda, lbeta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -310,6 +326,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cdnetLBFGS
+List cdnetLBFGS(Eigen::VectorXd par, const arma::vec& Gyb, const arma::mat& X, const int& Rbar, const int& maxy, const int& K, const int& n, const arma::uvec& y, const int& maxit, const double& eps_f, const double& eps_g, const bool& print);
+RcppExport SEXP _CDatanet_cdnetLBFGS(SEXP parSEXP, SEXP GybSEXP, SEXP XSEXP, SEXP RbarSEXP, SEXP maxySEXP, SEXP KSEXP, SEXP nSEXP, SEXP ySEXP, SEXP maxitSEXP, SEXP eps_fSEXP, SEXP eps_gSEXP, SEXP printSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type par(parSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxy(maxySEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_f(eps_fSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_g(eps_gSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type print(printSEXP);
+    rcpp_result_gen = Rcpp::wrap(cdnetLBFGS(par, Gyb, X, Rbar, maxy, K, n, y, maxit, eps_f, eps_g, print));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fcovCDI
 List fcovCDI(const int& n, const arma::vec& Gyb, const arma::vec& theta, const arma::mat& X, const int& Rbar, const int& K, const int& S, List& G, const arma::mat& igroup, const int& ngroup, const bool& ccov);
 RcppExport SEXP _CDatanet_fcovCDI(SEXP nSEXP, SEXP GybSEXP, SEXP thetaSEXP, SEXP XSEXP, SEXP RbarSEXP, SEXP KSEXP, SEXP SSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP ccovSEXP) {
@@ -328,6 +366,361 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
     Rcpp::traits::input_parameter< const bool& >::type ccov(ccovSEXP);
     rcpp_result_gen = Rcpp::wrap(fcovCDI(n, Gyb, theta, X, Rbar, K, S, G, igroup, ngroup, ccov));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fL2
+arma::vec fL2(const arma::vec& ZtLambda, const double& lambda, const arma::vec& delta, const double& bdelta, const double& rho, const int& Rbar, const int& n);
+RcppExport SEXP _CDatanet_fL2(SEXP ZtLambdaSEXP, SEXP lambdaSEXP, SEXP deltaSEXP, SEXP bdeltaSEXP, SEXP rhoSEXP, SEXP RbarSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type ZtLambda(ZtLambdaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type bdelta(bdeltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(fL2(ZtLambda, lambda, delta, bdelta, rho, Rbar, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fLncond2
+arma::vec fLncond2(const arma::mat& ZtLambda, const double& lambda, const arma::vec& delta, const double& bdelta, const double& rho, const int& Rbar, const int& n, const int& nsimu);
+RcppExport SEXP _CDatanet_fLncond2(SEXP ZtLambdaSEXP, SEXP lambdaSEXP, SEXP deltaSEXP, SEXP bdeltaSEXP, SEXP rhoSEXP, SEXP RbarSEXP, SEXP nSEXP, SEXP nsimuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type ZtLambda(ZtLambdaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type bdelta(bdeltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nsimu(nsimuSEXP);
+    rcpp_result_gen = Rcpp::wrap(fLncond2(ZtLambda, lambda, delta, bdelta, rho, Rbar, n, nsimu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fyb2
+int fyb2(arma::vec& yb, arma::vec& Gyb, List& G, const arma::mat& igroup, const int& ngroup, const arma::vec& psi, const double& lambda, const arma::vec& delta, const double& bdelta, const double& rho, const int& n, const int& Rbar, const double& tol, const int& maxit);
+RcppExport SEXP _CDatanet_fyb2(SEXP ybSEXP, SEXP GybSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP psiSEXP, SEXP lambdaSEXP, SEXP deltaSEXP, SEXP bdeltaSEXP, SEXP rhoSEXP, SEXP nSEXP, SEXP RbarSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type psi(psiSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type bdelta(bdeltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(fyb2(yb, Gyb, G, igroup, ngroup, psi, lambda, delta, bdelta, rho, n, Rbar, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fybncond2
+int fybncond2(arma::vec& yb, arma::vec& Gyb, List& G, const arma::mat& igroup, const int& ngroup, const arma::mat& psi, const double& lambda, const arma::vec& delta, const double& bdelta, const double& rho, const int& n, const int& nsimu, const int& Rbar, const double& tol, const int& maxit);
+RcppExport SEXP _CDatanet_fybncond2(SEXP ybSEXP, SEXP GybSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP psiSEXP, SEXP lambdaSEXP, SEXP deltaSEXP, SEXP bdeltaSEXP, SEXP rhoSEXP, SEXP nSEXP, SEXP nsimuSEXP, SEXP RbarSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type psi(psiSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type bdelta(bdeltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nsimu(nsimuSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(fybncond2(yb, Gyb, G, igroup, ngroup, psi, lambda, delta, bdelta, rho, n, nsimu, Rbar, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fy2
+arma::vec fy2(const arma::vec& yst, const double& maxyst, const double& lambda, const arma::vec& delta, const double& bdelta, const double& rho, const int& n, const int& Rbar);
+RcppExport SEXP _CDatanet_fy2(SEXP ystSEXP, SEXP maxystSEXP, SEXP lambdaSEXP, SEXP deltaSEXP, SEXP bdeltaSEXP, SEXP rhoSEXP, SEXP nSEXP, SEXP RbarSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type yst(ystSEXP);
+    Rcpp::traits::input_parameter< const double& >::type maxyst(maxystSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type bdelta(bdeltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    rcpp_result_gen = Rcpp::wrap(fy2(yst, maxyst, lambda, delta, bdelta, rho, n, Rbar));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fmeffects2
+List fmeffects2(const int& n, const double& lambda, const arma::vec& delta, const double& bdelta, const double& rho, const int& Rbar, const NumericVector& ZtLambda, const arma::vec& lbeta);
+RcppExport SEXP _CDatanet_fmeffects2(SEXP nSEXP, SEXP lambdaSEXP, SEXP deltaSEXP, SEXP bdeltaSEXP, SEXP rhoSEXP, SEXP RbarSEXP, SEXP ZtLambdaSEXP, SEXP lbetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type bdelta(bdeltaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type ZtLambda(ZtLambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lbeta(lbetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(fmeffects2(n, lambda, delta, bdelta, rho, Rbar, ZtLambda, lbeta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// foptimREM2
+double foptimREM2(arma::vec& yb, arma::vec& Gyb, const arma::vec& theta, const arma::mat& X, List& G, const arma::mat& igroup, const int& ngroup, const int& K, const int& n, const int& Rbar, const arma::uvec& y, const int& maxy, const double& tol, const int& maxit);
+RcppExport SEXP _CDatanet_foptimREM2(SEXP ybSEXP, SEXP GybSEXP, SEXP thetaSEXP, SEXP XSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP KSEXP, SEXP nSEXP, SEXP RbarSEXP, SEXP ySEXP, SEXP maxySEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxy(maxySEXP);
+    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(foptimREM2(yb, Gyb, theta, X, G, igroup, ngroup, K, n, Rbar, y, maxy, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// foptimREMncond12
+double foptimREMncond12(arma::vec& yb, arma::vec& Gyb, const arma::vec& theta, const arma::mat& X, const arma::mat& Simu1, const int& nsimu, List& G, const arma::mat& igroup, const int& ngroup, const int& K, const int& n, const int& Rbar, const arma::uvec& y, const int& maxy, const double& tol, const int& maxit);
+RcppExport SEXP _CDatanet_foptimREMncond12(SEXP ybSEXP, SEXP GybSEXP, SEXP thetaSEXP, SEXP XSEXP, SEXP Simu1SEXP, SEXP nsimuSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP KSEXP, SEXP nSEXP, SEXP RbarSEXP, SEXP ySEXP, SEXP maxySEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Simu1(Simu1SEXP);
+    Rcpp::traits::input_parameter< const int& >::type nsimu(nsimuSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxy(maxySEXP);
+    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(foptimREMncond12(yb, Gyb, theta, X, Simu1, nsimu, G, igroup, ngroup, K, n, Rbar, y, maxy, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// foptimREM_NPL2
+double foptimREM_NPL2(const arma::vec& Gyb, const arma::vec& theta, const arma::mat& X, const int& Rbar, const int& maxy, const int& K, const int& n, const arma::uvec& y);
+RcppExport SEXP _CDatanet_foptimREM_NPL2(SEXP GybSEXP, SEXP thetaSEXP, SEXP XSEXP, SEXP RbarSEXP, SEXP maxySEXP, SEXP KSEXP, SEXP nSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxy(maxySEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(foptimREM_NPL2(Gyb, theta, X, Rbar, maxy, K, n, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fL_NPL2
+void fL_NPL2(arma::vec& yb, arma::vec& Gyb, List& G, const arma::mat& igroup, const int& ngroup, const arma::mat& X, const arma::vec& theta, const int& Rbar, const int& K, const int& n);
+RcppExport SEXP _CDatanet_fL_NPL2(SEXP ybSEXP, SEXP GybSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP XSEXP, SEXP thetaSEXP, SEXP RbarSEXP, SEXP KSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    fL_NPL2(yb, Gyb, G, igroup, ngroup, X, theta, Rbar, K, n);
+    return R_NilValue;
+END_RCPP
+}
+// fnewyb2
+void fnewyb2(arma::vec& yb, arma::vec& Gyb, List& G, const arma::mat& igroup, const int& ngroup, const arma::mat& X, const arma::vec& theta, const int& Rbar, const int& K, const int& n, const double& tol, const int& maxit);
+RcppExport SEXP _CDatanet_fnewyb2(SEXP ybSEXP, SEXP GybSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP XSEXP, SEXP thetaSEXP, SEXP RbarSEXP, SEXP KSEXP, SEXP nSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    fnewyb2(yb, Gyb, G, igroup, ngroup, X, theta, Rbar, K, n, tol, maxit);
+    return R_NilValue;
+END_RCPP
+}
+// foptimREM_NPLncond12
+double foptimREM_NPLncond12(const arma::vec& Gyb, const arma::vec& theta, const arma::mat& X, const arma::mat& Simu1, const int& nsimu, const int& Rbar, const int& maxy, const int& K, const int& n, const arma::uvec& y);
+RcppExport SEXP _CDatanet_foptimREM_NPLncond12(SEXP GybSEXP, SEXP thetaSEXP, SEXP XSEXP, SEXP Simu1SEXP, SEXP nsimuSEXP, SEXP RbarSEXP, SEXP maxySEXP, SEXP KSEXP, SEXP nSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Simu1(Simu1SEXP);
+    Rcpp::traits::input_parameter< const int& >::type nsimu(nsimuSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxy(maxySEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(foptimREM_NPLncond12(Gyb, theta, X, Simu1, nsimu, Rbar, maxy, K, n, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fL_NPLncond12
+void fL_NPLncond12(arma::vec& yb, arma::vec& Gyb, List& G, const arma::mat& igroup, const int& ngroup, const arma::mat& X, const arma::vec& theta, const arma::mat& Simu1, const int& nsimu, const int& Rbar, const int& K, const int& n);
+RcppExport SEXP _CDatanet_fL_NPLncond12(SEXP ybSEXP, SEXP GybSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP XSEXP, SEXP thetaSEXP, SEXP Simu1SEXP, SEXP nsimuSEXP, SEXP RbarSEXP, SEXP KSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Simu1(Simu1SEXP);
+    Rcpp::traits::input_parameter< const int& >::type nsimu(nsimuSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    fL_NPLncond12(yb, Gyb, G, igroup, ngroup, X, theta, Simu1, nsimu, Rbar, K, n);
+    return R_NilValue;
+END_RCPP
+}
+// foptimREM_NPLncond22
+double foptimREM_NPLncond22(const arma::vec& Gyb, const arma::vec& theta, const arma::mat& X, const arma::mat& Simu1, const arma::mat& Simu2, const int& nsimu, const int& Rbar, const int& maxy, const int& K, const int& n, const arma::uvec& y);
+RcppExport SEXP _CDatanet_foptimREM_NPLncond22(SEXP GybSEXP, SEXP thetaSEXP, SEXP XSEXP, SEXP Simu1SEXP, SEXP Simu2SEXP, SEXP nsimuSEXP, SEXP RbarSEXP, SEXP maxySEXP, SEXP KSEXP, SEXP nSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Simu1(Simu1SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Simu2(Simu2SEXP);
+    Rcpp::traits::input_parameter< const int& >::type nsimu(nsimuSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxy(maxySEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(foptimREM_NPLncond22(Gyb, theta, X, Simu1, Simu2, nsimu, Rbar, maxy, K, n, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fL_NPLncond22
+void fL_NPLncond22(arma::vec& yb, arma::vec& Gyb, List& G, const arma::mat& igroup, const int& ngroup, const arma::mat& X, const arma::vec& theta, const arma::mat& Simu1, const arma::mat& Simu2, const int& nsimu, const int& Rbar, const int& K, const int& n);
+RcppExport SEXP _CDatanet_fL_NPLncond22(SEXP ybSEXP, SEXP GybSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP XSEXP, SEXP thetaSEXP, SEXP Simu1SEXP, SEXP Simu2SEXP, SEXP nsimuSEXP, SEXP RbarSEXP, SEXP KSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type yb(ybSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Simu1(Simu1SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Simu2(Simu2SEXP);
+    Rcpp::traits::input_parameter< const int& >::type nsimu(nsimuSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    fL_NPLncond22(yb, Gyb, G, igroup, ngroup, X, theta, Simu1, Simu2, nsimu, Rbar, K, n);
+    return R_NilValue;
+END_RCPP
+}
+// cdnetLBFGSrho
+List cdnetLBFGSrho(Eigen::VectorXd par, const arma::vec& Gyb, const arma::mat& X, const int& Rbar, const int& maxy, const int& K, const int& n, const arma::uvec& y, const int& maxit, const double& eps_f, const double& eps_g, const bool& print);
+RcppExport SEXP _CDatanet_cdnetLBFGSrho(SEXP parSEXP, SEXP GybSEXP, SEXP XSEXP, SEXP RbarSEXP, SEXP maxySEXP, SEXP KSEXP, SEXP nSEXP, SEXP ySEXP, SEXP maxitSEXP, SEXP eps_fSEXP, SEXP eps_gSEXP, SEXP printSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type par(parSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxy(maxySEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_f(eps_fSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_g(eps_gSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type print(printSEXP);
+    rcpp_result_gen = Rcpp::wrap(cdnetLBFGSrho(par, Gyb, X, Rbar, maxy, K, n, y, maxit, eps_f, eps_g, print));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fcovCDI2
+List fcovCDI2(const int& n, const arma::vec& Gyb, const arma::vec& theta, const arma::mat& X, const int& Rbar, const int& K, const int& S, List& G, const arma::mat& igroup, const int& ngroup, const bool& ccov);
+RcppExport SEXP _CDatanet_fcovCDI2(SEXP nSEXP, SEXP GybSEXP, SEXP thetaSEXP, SEXP XSEXP, SEXP RbarSEXP, SEXP KSEXP, SEXP SSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP ccovSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Rbar(RbarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type S(SSEXP);
+    Rcpp::traits::input_parameter< List& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type igroup(igroupSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ngroup(ngroupSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type ccov(ccovSEXP);
+    rcpp_result_gen = Rcpp::wrap(fcovCDI2(n, Gyb, theta, X, Rbar, K, S, G, igroup, ngroup, ccov));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -417,6 +810,46 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int& >::type iteration(iterationSEXP);
     rcpp_result_gen = Rcpp::wrap(updategparms2(a, dx, invdxdx, beta0, mu0, nu0, smu20, snu20, rho0, index, indexgr, INDEXgr, nfix, N, M, K, Kx, nvec, n, iteration));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fhomobeta
+List fhomobeta(Eigen::VectorXd theta, const arma::vec& a, const arma::mat& dx, const arma::vec& nvec, const arma::mat& index, const arma::mat& indexgr, const int& M, const int maxit, const double& eps_f, const double& eps_g);
+RcppExport SEXP _CDatanet_fhomobeta(SEXP thetaSEXP, SEXP aSEXP, SEXP dxSEXP, SEXP nvecSEXP, SEXP indexSEXP, SEXP indexgrSEXP, SEXP MSEXP, SEXP maxitSEXP, SEXP eps_fSEXP, SEXP eps_gSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type dx(dxSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type nvec(nvecSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type index(indexSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type indexgr(indexgrSEXP);
+    Rcpp::traits::input_parameter< const int& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const int >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_f(eps_fSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_g(eps_gSEXP);
+    rcpp_result_gen = Rcpp::wrap(fhomobeta(theta, a, dx, nvec, index, indexgr, M, maxit, eps_f, eps_g));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fhomobetap
+List fhomobetap(Eigen::VectorXd theta, const arma::vec& a, const arma::mat& dx, const arma::vec& nvec, const arma::mat& index, const arma::mat& indexgr, const int& M, const int& maxit, const double& eps_f, const double& eps_g);
+RcppExport SEXP _CDatanet_fhomobetap(SEXP thetaSEXP, SEXP aSEXP, SEXP dxSEXP, SEXP nvecSEXP, SEXP indexSEXP, SEXP indexgrSEXP, SEXP MSEXP, SEXP maxitSEXP, SEXP eps_fSEXP, SEXP eps_gSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type dx(dxSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type nvec(nvecSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type index(indexSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type indexgr(indexgrSEXP);
+    Rcpp::traits::input_parameter< const int& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_f(eps_fSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_g(eps_gSEXP);
+    rcpp_result_gen = Rcpp::wrap(fhomobetap(theta, a, dx, nvec, index, indexgr, M, maxit, eps_f, eps_g));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -763,6 +1196,28 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// sartLBFGS
+List sartLBFGS(Eigen::VectorXd par, const arma::vec& yidpos, const arma::vec& Gyb, const arma::mat& X, const int& npos, const arma::uvec& idpos, const arma::uvec& idzero, const int& K, const int& maxit, const double& eps_f, const double& eps_g, const bool& print);
+RcppExport SEXP _CDatanet_sartLBFGS(SEXP parSEXP, SEXP yidposSEXP, SEXP GybSEXP, SEXP XSEXP, SEXP nposSEXP, SEXP idposSEXP, SEXP idzeroSEXP, SEXP KSEXP, SEXP maxitSEXP, SEXP eps_fSEXP, SEXP eps_gSEXP, SEXP printSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type par(parSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type yidpos(yidposSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Gyb(GybSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const int& >::type npos(nposSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type idpos(idposSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type idzero(idzeroSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_f(eps_fSEXP);
+    Rcpp::traits::input_parameter< const double& >::type eps_g(eps_gSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type print(printSEXP);
+    rcpp_result_gen = Rcpp::wrap(sartLBFGS(par, yidpos, Gyb, X, npos, idpos, idzero, K, maxit, eps_f, eps_g, print));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fnewybTBT
 void fnewybTBT(arma::vec& yb, arma::vec& Gyb, List& G, const arma::mat& igroup, const int& ngroup, const arma::mat& X, const arma::vec& theta, const int& K, const int& n, const double& tol, const int& maxit);
 RcppExport SEXP _CDatanet_fnewybTBT(SEXP ybSEXP, SEXP GybSEXP, SEXP GSEXP, SEXP igroupSEXP, SEXP ngroupSEXP, SEXP XSEXP, SEXP thetaSEXP, SEXP KSEXP, SEXP nSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
@@ -809,6 +1264,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CDatanet_fyb", (DL_FUNC) &_CDatanet_fyb, 12},
     {"_CDatanet_fybncond", (DL_FUNC) &_CDatanet_fybncond, 13},
     {"_CDatanet_fy", (DL_FUNC) &_CDatanet_fy, 5},
+    {"_CDatanet_fmeffects", (DL_FUNC) &_CDatanet_fmeffects, 5},
     {"_CDatanet_foptimREM", (DL_FUNC) &_CDatanet_foptimREM, 14},
     {"_CDatanet_foptimREMncond1", (DL_FUNC) &_CDatanet_foptimREMncond1, 16},
     {"_CDatanet_foptimREM_NPL", (DL_FUNC) &_CDatanet_foptimREM_NPL, 8},
@@ -819,11 +1275,31 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CDatanet_foptimREM_NPLncond2", (DL_FUNC) &_CDatanet_foptimREM_NPLncond2, 11},
     {"_CDatanet_fL_NPLncond2", (DL_FUNC) &_CDatanet_fL_NPLncond2, 13},
     {"_CDatanet_flogintphi", (DL_FUNC) &_CDatanet_flogintphi, 8},
+    {"_CDatanet_cdnetLBFGS", (DL_FUNC) &_CDatanet_cdnetLBFGS, 12},
     {"_CDatanet_fcovCDI", (DL_FUNC) &_CDatanet_fcovCDI, 11},
+    {"_CDatanet_fL2", (DL_FUNC) &_CDatanet_fL2, 7},
+    {"_CDatanet_fLncond2", (DL_FUNC) &_CDatanet_fLncond2, 8},
+    {"_CDatanet_fyb2", (DL_FUNC) &_CDatanet_fyb2, 14},
+    {"_CDatanet_fybncond2", (DL_FUNC) &_CDatanet_fybncond2, 15},
+    {"_CDatanet_fy2", (DL_FUNC) &_CDatanet_fy2, 8},
+    {"_CDatanet_fmeffects2", (DL_FUNC) &_CDatanet_fmeffects2, 8},
+    {"_CDatanet_foptimREM2", (DL_FUNC) &_CDatanet_foptimREM2, 14},
+    {"_CDatanet_foptimREMncond12", (DL_FUNC) &_CDatanet_foptimREMncond12, 16},
+    {"_CDatanet_foptimREM_NPL2", (DL_FUNC) &_CDatanet_foptimREM_NPL2, 8},
+    {"_CDatanet_fL_NPL2", (DL_FUNC) &_CDatanet_fL_NPL2, 10},
+    {"_CDatanet_fnewyb2", (DL_FUNC) &_CDatanet_fnewyb2, 12},
+    {"_CDatanet_foptimREM_NPLncond12", (DL_FUNC) &_CDatanet_foptimREM_NPLncond12, 10},
+    {"_CDatanet_fL_NPLncond12", (DL_FUNC) &_CDatanet_fL_NPLncond12, 12},
+    {"_CDatanet_foptimREM_NPLncond22", (DL_FUNC) &_CDatanet_foptimREM_NPLncond22, 11},
+    {"_CDatanet_fL_NPLncond22", (DL_FUNC) &_CDatanet_fL_NPLncond22, 13},
+    {"_CDatanet_cdnetLBFGSrho", (DL_FUNC) &_CDatanet_cdnetLBFGSrho, 12},
+    {"_CDatanet_fcovCDI2", (DL_FUNC) &_CDatanet_fcovCDI2, 11},
     {"_CDatanet_fdummies", (DL_FUNC) &_CDatanet_fdummies, 4},
     {"_CDatanet_fmusum", (DL_FUNC) &_CDatanet_fmusum, 6},
     {"_CDatanet_updategparms1", (DL_FUNC) &_CDatanet_updategparms1, 20},
     {"_CDatanet_updategparms2", (DL_FUNC) &_CDatanet_updategparms2, 20},
+    {"_CDatanet_fhomobeta", (DL_FUNC) &_CDatanet_fhomobeta, 10},
+    {"_CDatanet_fhomobetap", (DL_FUNC) &_CDatanet_fhomobetap, 10},
     {"_CDatanet_fySar", (DL_FUNC) &_CDatanet_fySar, 8},
     {"_CDatanet_foptimSAR", (DL_FUNC) &_CDatanet_foptimSAR, 9},
     {"_CDatanet_foptimSAR0", (DL_FUNC) &_CDatanet_foptimSAR0, 9},
@@ -840,6 +1316,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CDatanet_foptimRE_TBT", (DL_FUNC) &_CDatanet_foptimRE_TBT, 15},
     {"_CDatanet_foptimTBT_NPL", (DL_FUNC) &_CDatanet_foptimTBT_NPL, 8},
     {"_CDatanet_fLTBT_NPL", (DL_FUNC) &_CDatanet_fLTBT_NPL, 9},
+    {"_CDatanet_sartLBFGS", (DL_FUNC) &_CDatanet_sartLBFGS, 12},
     {"_CDatanet_fnewybTBT", (DL_FUNC) &_CDatanet_fnewybTBT, 11},
     {"_CDatanet_fcovSTI", (DL_FUNC) &_CDatanet_fcovSTI, 9},
     {NULL, NULL, 0}

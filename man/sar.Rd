@@ -37,9 +37,9 @@ of these functions such as, the control values and the method can be defined thr
 
 \item{opt.ctr}{list of arguments of \link[stats]{nlm} or \link[stats]{optim} (the one set in \code{optimizer}) such as control, method, ...}
 
-\item{print}{a boolean indicating if the estimate should be printed at each step.}
+\item{print}{a Boolean indicating if the estimate should be printed at each step.}
 
-\item{cov}{a boolean indicating if the covariance should be computed.}
+\item{cov}{a Boolean indicating if the covariance should be computed.}
 
 \item{data}{an optional data frame, list or environment (or object coercible by \link[base]{as.data.frame} to a data frame) containing the variables
 in the model. If not found in data, the variables are taken from \code{environment(formula)}, typically the environment from which \code{mcmcARD} is called.}
@@ -52,7 +52,7 @@ A list consisting of:
 \item{details}{outputs as returned by the optimizer.}
 }
 \description{
-Estimate SAR model
+\code{sar} is used to estimate peer effects continuous variables (see details). The model is presented in Lee(2004).
 }
 \details{
 \subsection{Model}{
@@ -116,6 +116,9 @@ out     <- sar(formula = yt ~ x1 + x2, contextual = TRUE,
                  Glist = Glist, optimizer = "optim", data = data)
 summary(out)
 }
+}
+\references{
+Lee, L. F. (2004). Asymptotic distributions of quasi‐maximum likelihood estimators for spatial autoregressive models. \emph{Econometrica}, 72(6), 1899-1925, \doi{10.1111/j.1468-0262.2004.00558.x}.
 }
 \seealso{
 \code{\link{sart}}, \code{\link{cdnet}}, \code{\link{simsar}}.

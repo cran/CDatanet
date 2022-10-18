@@ -24,18 +24,26 @@
  *           may not be reached and the algorithm will stop after maxit iterations.
  * yb      : is the vector of equilibrium outcome expectation.
  */
+// [[Rcpp::depends(RcppArmadillo, RcppEigen, RcppNumerical)]]
 
-// [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
+#include <RcppNumerical.h>
+#include <RcppEigen.h>
 
+typedef Eigen::Map<Eigen::MatrixXd> MapMatr;
+typedef Eigen::Map<Eigen::VectorXd> MapVect;
+
+using namespace Numer;
 using namespace Rcpp;
 using namespace arma;
 using namespace std;
 
+
+
 arma::vec fLTBT(const NumericVector& ZtLambda,
                  const double sigma) {
   return ZtLambda*Rcpp::pnorm5(ZtLambda/sigma, 0, 1, true, false) + 
-    sigma*Rcpp::dnorm4(ZtLambda/sigma, 0, 1, false);;
+    sigma*Rcpp::dnorm4(ZtLambda/sigma, 0, 1, false);
 }
 
 // fyb: Takes an initial value of yb and finds the equilibrium
@@ -58,7 +66,8 @@ int fybtbit(arma::vec& yb,
   computeL: ++t;
   ZtLambda       = lambda*Gyb + psi;
   arma::vec ybst = fLTBT(wrap(ZtLambda), sigma);
-  double dist    = arma::accu(arma::abs(yb - ybst));
+  // double dist    = max(arma::abs(ybst/(yb + 1e-50) - 1));
+  double dist    = max(arma::abs((ybst - yb)/yb));
   yb             = ybst;
   
   for (int m(0); m < ngroup; ++ m) {
@@ -159,6 +168,199 @@ void fLTBT_NPL(arma::vec& yb,
   }
 }
 
+// I now implement the optimization using Rcpp
+class sartreg: public MFuncGrad
+{
+private:
+  const arma::vec& yidpos;
+  const arma::mat& Z;
+  const arma::mat& Z0;
+  const arma::mat& Z1;
+  const int& npos;
+  const arma::uvec& idpos;
+  const arma::uvec& idzero;
+  const int& K;
+  const double& l2ps2;
+public:
+  sartreg(const arma::vec& yidpos_,
+            const arma::mat& Z_,
+            const arma::mat& Z0_,
+            const arma::mat& Z1_,
+            const int& npos_,
+            const arma::uvec& idpos_,
+            const arma::uvec& idzero_,
+            const int& K_,
+            const double& l2ps2) : 
+  yidpos(yidpos_),
+  Z(Z_),
+  Z0(Z0_),
+  Z1(Z1_),
+  npos(npos_),
+  idpos(idpos_),
+  idzero(idzero_),
+  K(K_),
+  l2ps2(l2ps2){}
+  
+  Eigen::VectorXd Grad;
+  
+  double f_grad(Constvec& theta, Refvec grad)
+  {
+    // cout << theta.transpose() <<endl;
+    Eigen::VectorXd theta0 = theta;  //make a copy
+    arma::vec beta         = arma::vec(theta0.data(), K + 2, false, false); //converte into arma vec
+    double lsigma          = beta(K + 1);
+    beta(K + 1)            = exp(beta(K + 1));
+    beta(0)                = 1.0/(exp(-beta(0)) + 1);
+    double sigma           = beta(K + 1);
+    arma::vec ZtLambdast   = Z*beta.head(K + 1)/sigma;
+    arma::vec ZtLsd0       = ZtLambdast.elem(idzero);
+    NumericVector FZtLst0r = wrap(ZtLsd0);
+    FZtLst0r               = Rcpp::pnorm5(FZtLst0r, 0, 1, false, true);
+    arma::vec FZtLst0      = as<arma::vec>(FZtLst0r);
+    arma::vec fZtLst0      = -0.5*ZtLsd0%ZtLsd0 - l2ps2;
+    arma::vec errstp       = yidpos/sigma - ZtLambdast.elem(idpos);
+    double serrerrstp      = sum(errstp%errstp);
+      
+    double f               = sum(FZtLst0r) - npos*(l2ps2 + lsigma) - 0.5*serrerrstp;
+    
+    arma::vec tmp          = exp(fZtLst0 - FZtLst0);
+    if(f > 1e293) {
+      f                    = 1e293;
+    }
+    
+    arma::vec gdarm(K + 2);
+    gdarm.head(K + 1)      = arma::trans(-arma::sum(Z0.each_col()%tmp, 0) + arma::sum(Z1.each_col()%errstp, 0))/sigma;
+    gdarm(K + 1)           = sum(ZtLsd0%tmp) + serrerrstp - npos;
+    gdarm(0)              *= beta(0)*(1 - beta(0));
+    grad                   = -Eigen::Map<Eigen::VectorXd>(gdarm.memptr(), K + 2);
+    Grad                   = -grad;
+    
+    // cout<< f <<endl;
+    return -f;
+  }
+};
+
+class sartreg_print: public MFuncGrad
+{
+private:
+  const arma::vec& yidpos;
+  const arma::mat& Z;
+  const arma::mat& Z0;
+  const arma::mat& Z1;
+  const int& npos;
+  const arma::uvec& idpos;
+  const arma::uvec& idzero;
+  const int& K;
+  const double& l2ps2;
+public:
+  sartreg_print(const arma::vec& yidpos_,
+          const arma::mat& Z_,
+          const arma::mat& Z0_,
+          const arma::mat& Z1_,
+          const int& npos_,
+          const arma::uvec& idpos_,
+          const arma::uvec& idzero_,
+          const int& K_,
+          const double& l2ps2) : 
+  yidpos(yidpos_),
+  Z(Z_),
+  Z0(Z0_),
+  Z1(Z1_),
+  npos(npos_),
+  idpos(idpos_),
+  idzero(idzero_),
+  K(K_),
+  l2ps2(l2ps2){}
+  
+  Eigen::VectorXd Grad;
+  
+  double f_grad(Constvec& theta, Refvec grad)
+  {
+    Eigen::VectorXd theta0 = theta;  //make a copy
+    arma::vec beta         = arma::vec(theta0.data(), K + 2, false, false); //converte into arma vec
+    double lsigma          = beta(K + 1);
+    beta(K + 1)            = exp(beta(K + 1));
+    beta(0)                = 1.0/(exp(-beta(0)) + 1);
+    // cout << theta.transpose() <<endl;
+    NumericVector betacpp  = wrap(beta);
+    betacpp.attr("dim")    = R_NilValue;
+    // std::printf("beta: \n");
+    Rcpp::Rcout << "beta: \n";
+    Rcpp::print(betacpp);
+    
+    double sigma           = beta(K + 1);
+    arma::vec ZtLambdast   = Z*beta.head(K + 1)/sigma;
+    arma::vec ZtLsd0       = ZtLambdast.elem(idzero);
+    NumericVector FZtLst0r = wrap(ZtLsd0);
+    FZtLst0r               = Rcpp::pnorm5(FZtLst0r, 0, 1, false, true);
+    arma::vec FZtLst0      = as<arma::vec>(FZtLst0r);
+    arma::vec fZtLst0      = -0.5*ZtLsd0%ZtLsd0 - l2ps2;
+    arma::vec errstp       = yidpos/sigma - ZtLambdast.elem(idpos);
+    double serrerrstp      = sum(errstp%errstp);
+    
+    double f               = sum(FZtLst0r) - npos*(l2ps2 + lsigma) - 0.5*serrerrstp;
+    
+    arma::vec tmp          = exp(fZtLst0 - FZtLst0);
+    if(f > 1e293) {
+      f                    = 1e293;
+    }
+    
+    arma::vec gdarm(K + 2);
+    gdarm.head(K + 1)      = arma::trans(-arma::sum(Z0.each_col()%tmp, 0) + arma::sum(Z1.each_col()%errstp, 0))/sigma;
+    gdarm(K + 1)           = sum(ZtLsd0%tmp) + serrerrstp - npos;
+    gdarm(0)              *= beta(0)*(1 - beta(0));
+    grad                   = -Eigen::Map<Eigen::VectorXd>(gdarm.memptr(), K + 2);
+    Grad                   = -grad;
+    
+    // cout<< f <<endl;
+    // std::("log-likelihood: %f\n", f);
+    Rcpp::Rcout << "log-likelihood: " << f << "\n";
+    return -f;
+  }
+};
+
+
+//[[Rcpp::export]]
+List sartLBFGS(Eigen::VectorXd par,
+               const arma::vec& yidpos,
+               const arma::vec& Gyb,
+               const arma::mat& X,
+               const int& npos,
+               const arma::uvec& idpos,
+               const arma::uvec& idzero,
+               const int& K,
+               const int& maxit = 300, 
+               const double& eps_f = 1e-6, 
+               const double& eps_g = 1e-5,
+               const bool& print = false) {
+  double l2ps2 = 0.5*log(2*acos(-1));
+  
+  arma::mat Z      = arma::join_rows(Gyb, X);
+  arma::mat Z0     = Z.rows(idzero);
+  arma::mat Z1     = Z.rows(idpos);
+  
+  double fopt;
+  int status;
+  Eigen::VectorXd grad;
+  
+  if(print){
+    sartreg_print f(yidpos, Z, Z0, Z1, npos, idpos, idzero, K, l2ps2);
+    status = optim_lbfgs(f, par, fopt, maxit, eps_f, eps_g);
+    grad  = f.Grad;
+  } else {
+    sartreg f(yidpos, Z, Z0, Z1, npos, idpos, idzero, K, l2ps2);
+    status = optim_lbfgs(f, par, fopt, maxit, eps_f, eps_g);
+    grad  = f.Grad;
+  }
+
+  return Rcpp::List::create(
+    Rcpp::Named("par")      = par,
+    Rcpp::Named("value")    = fopt,
+    Rcpp::Named("gradient") = grad,
+    Rcpp::Named("status")   = status);
+}
+
+
 //[[Rcpp::export]]
 void fnewybTBT(arma::vec& yb,
                arma::vec& Gyb,
@@ -196,19 +398,22 @@ List fcovSTI(const int& n,
   double sigma           = exp(theta(K + 1));
   arma::vec ZtL          = lambda*Gyb + X*theta.subvec(1, K); 
   NumericVector ZtLst    = wrap(ZtL/sigma);
-  NumericVector PhiZtLst = Rcpp::pnorm(ZtLst, 0, 1, true, false);
+  NumericVector LHhiZtLst= Rcpp::pnorm(ZtLst, 0, 1, false, true);
+  NumericVector PhiZtLst = 1 - exp(LHhiZtLst);
   double avPhiZtLst      = sum(PhiZtLst)/n;
   arma::vec lbeta        = arma::join_cols(arma::ones(1)*lambda, theta.subvec(1, K));
   arma::vec meffects     = avPhiZtLst*lbeta;
   
   if(ccov){
     arma::mat Z                = arma::join_rows(Gyb, X);
-    NumericVector phiZtLst     = Rcpp::dnorm4(ZtLst, 0, 1, false); 
+    NumericVector lphiZtLst    = Rcpp::dnorm4(ZtLst, 0, 1, true);
+    NumericVector phiZtLst     = exp(lphiZtLst); 
     NumericVector Zst1phiZtLst = ZtLst*phiZtLst;
     NumericVector Zst2phiZtLst = ZtLst*Zst1phiZtLst;
     NumericVector Zst3phiZtLst = ZtLst*Zst2phiZtLst;
-    NumericVector RphiPhi      = phiZtLst/(1 - PhiZtLst);
+    NumericVector RphiPhi      = exp(lphiZtLst - LHhiZtLst);
     
+    // cout<<sum(RphiPhi)<<endl;
     // compute GinvSW
     arma::mat GinvSW(n, K + 2);
     {// Compute b and d
@@ -227,6 +432,7 @@ List fcovSTI(const int& n,
         GinvSW.rows(n1, n2) = Gm * arma::solve(Sm, W.rows(n1, n2));
       }
     }
+    // cout<<arma::accu(GinvSW)<<endl;
   
     // Compute Sigma0 and Omega0
     arma::mat Sigma(K + 2, K + 2), Omega(K + 2, K + 2);
@@ -246,7 +452,7 @@ List fcovSTI(const int& n,
     Sigma(K + 1, K + 1)              = sum(Zst1phiZtLst + Zst3phiZtLst - Zst2phiZtLst*RphiPhi - 2*PhiZtLst);
     }
     
-    Omega          = Omega*lambda/sigma;
+    Omega          = Omega*lambda/sigma;//cout<<Omega<<endl;cout<<Sigma<<endl;
     // covt
     arma::mat covt = arma::inv(Sigma + Omega);
     covt           = -covt*Sigma*covt.t();

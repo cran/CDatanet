@@ -10,16 +10,18 @@
 #' @param theta0 (optional) starting value of \eqn{\theta = (\lambda, \beta, \gamma, \sigma)}. The parameter \eqn{\gamma} should be removed if the model
 #' does not contain contextual effects (see details).
 #' @param yb0 (optional) expectation of y.
-#' @param optimizer is either `nlm` (referring to the function \link[stats]{nlm}) or `optim` (referring to the function \link[stats]{optim}). 
+#' @param optimizer is either `fastlbfgs` (L-BFGS optimization method of the package \pkg{RcppNumerical}), `nlm` (referring to the function \link[stats]{nlm}), or `optim` (referring to the function \link[stats]{optim}). 
 #' Other arguments 
-#' of these functions such as, the control values and the method can be defined through the argument `opt.ctr`.
+#' of these functions such as, `control` and `method` can be defined through the argument `opt.ctr`.
 #' @param npl.ctr list of controls for the NPL method (see \code{\link{cdnet}}).
-#' @param opt.ctr list of arguments of \link[stats]{nlm} or \link[stats]{optim} (the one set in `optimizer`) such as control, method, ...
-#' @param print a boolean indicating if the estimate should be printed at each step.
-#' @param cov a boolean indicating if the covariance should be computed.
-#' @param RE a boolean which indicates if the model if under rational expectation of not.
+#' @param opt.ctr list of arguments to be passed in `optim_lbfgs` of the package \pkg{RcppNumerical}, \link[stats]{nlm} or \link[stats]{optim} (the solver set in `optimizer`), such as `maxit`, `eps_f`, `eps_g`, `control`, `method`, ...
+#' @param print a Boolean indicating if the estimate should be printed at each step.
+#' @param cov a Boolean indicating if the covariance should be computed.
+#' @param RE a Boolean which indicates if the model if under rational expectation of not.
 #' @param data an optional data frame, list or environment (or object coercible by \link[base]{as.data.frame} to a data frame) containing the variables
 #' in the model. If not found in data, the variables are taken from \code{environment(formula)}, typically the environment from which `sart` is called.
+#' @description
+#' `sart` is used to estimate peer effects on censored data (see details). The model is presented in Xu and Lee(2015). 
 #' @return A list consisting of:
 #'     \item{info}{list of general information on the model.}
 #'     \item{estimate}{Maximum Likelihood (ML) estimator.}
@@ -36,6 +38,8 @@
 #' The count variable \eqn{y_i} is then define that is \eqn{y_i = 0} if  
 #' \eqn{y_i^* \leq 0}{ys_i \le 0} and \eqn{y_i = y_i^*}{y_i = ys_i} otherwise.
 #' @seealso \code{\link{sar}}, \code{\link{cdnet}}, \code{\link{simsart}}.
+#' @references 
+#' Xu, X., & Lee, L. F. (2015). Maximum likelihood estimation of a spatial autoregressive Tobit model. \emph{Journal of Econometrics}, 188(1), 264-280, \doi{10.1016/j.jeconom.2015.05.004}.
 #' @examples 
 #' \donttest{
 #' # Groups' size
@@ -100,14 +104,17 @@ sart <- function(formula,
                  Glist,
                  theta0 = NULL,
                  yb0  = NULL,
-                 optimizer = "optim",
+                 optimizer = "fastlbfgs",
                  npl.ctr  = list(), 
                  opt.ctr = list(),
                  print = TRUE,
                  cov = TRUE,
                  RE = FALSE,
                  data) {
-  stopifnot(optimizer %in% c("optim", "nlm"))
+  stopifnot(optimizer %in% c("fastlbfgs", "optim", "nlm"))
+  if(!RE & optimizer == "fastlbfgs"){
+    stop("fastlbfgs is only implemented for the rational expectation model in this version. Use another solver.")
+  }
   env.formula <- environment(formula)
   # controls
   npl.print   <- print
@@ -196,8 +203,14 @@ sart <- function(formula,
     yidpos   <- y[indpos]
     ctr      <- c(list("yidpos" = yidpos, "Gyb" = Gybt, "X" = X, "npos" = sum(npos), 
                        "idpos" = idpos, "idzero" = idzero, "K" = K), opt.ctr)
-    
-    if (optimizer == "optim") {
+
+    if (optimizer == "fastlbfgs"){
+      ctr    <- c(ctr, list(par = thetat)); optimizer = "sartLBFGS"
+      
+      par0   <- "par"
+      par1   <- "par"
+      like   <- "value"
+    } else if (optimizer == "optim") {
       ctr    <- c(ctr, list(fn = foptimTBT_NPL, par = thetat))
       
       par0   <- "par"
@@ -212,10 +225,11 @@ sart <- function(formula,
     
     if(npl.print) {
       while(cont) {
-        tryCatch({
+        # tryCatch({
           ybt0        <- ybt + 0    #copy in different memory
           
           # compute theta
+          # print(optimizer)
           REt         <- do.call(get(optimizer), ctr)
           thetat      <- REt[[par1]]
           llh         <- -REt[[like]]
@@ -226,7 +240,8 @@ sart <- function(formula,
           fLTBT_NPL(ybt, Gybt, Glist, X, thetat, igr, M, n, K)
           
           # distance
-          dist        <- sum(abs(ctr[[par0]] - thetat)) + sum(abs(ybt0 - ybt))
+          # dist        <- max(abs(c(ctr[[par0]]/thetat, ybt0/(ybt + 1e-50)) - 1), na.rm = TRUE)
+          dist        <- max(abs(c((ctr[[par0]] - thetat)/thetat, (ybt0 - ybt)/ybt)), na.rm = TRUE)
           cont        <- (dist > npl.tol & t < (npl.maxit - 1))
           t           <- t + 1
           REt$dist    <- dist
@@ -239,20 +254,20 @@ sart <- function(formula,
           cat(paste0("Likelihood    : ", round(llh,3)), "\n")
           cat("Estimate:", "\n")
           print(theta)
-        },
-        error = function(e){
-          cat("** Non-convergence ** Redefining theta and computing a new yb\n")
-          thetat[1]   <- -4.5
-          fnewybTBT(ybt, Gybt, Glist, igr, M, X, thetat, K, n, npl.tol, npl.maxit)
-          cont        <- TRUE
-          t           <- t + 1
-          ctr[[par0]] <- thetat
-          steps[[t]]  <- NULL
-        })
+        # },
+        # error = function(e){
+        #   cat("** Non-convergence ** Redefining theta and computing a new yb\n")
+        #   thetat[1]   <- -4.5
+        #   fnewybTBT(ybt, Gybt, Glist, igr, M, X, thetat, K, n, npl.tol, npl.maxit)
+        #   cont        <- TRUE
+        #   t           <- t + 1
+        #   ctr[[par0]] <- thetat
+        #   resTO[[t]]  <- NULL
+        # })
       }
     } else {
       while(cont) {
-        tryCatch({
+        # tryCatch({
           ybt0        <- ybt + 0    #copy in different memory
           
           # compute theta
@@ -263,21 +278,22 @@ sart <- function(formula,
           fLTBT_NPL(ybt, Gybt, Glist, X, thetat, igr, M, n, K)
           
           # distance
-          dist        <- sum(abs(ctr[[par0]] - thetat)) + sum(abs(ybt0 - ybt))
+          # dist        <- max(abs(c(ctr[[par0]]/thetat, ybt0/(ybt + 1e-50)) - 1), na.rm = TRUE)
+          dist        <- max(abs(c((ctr[[par0]] - thetat)/thetat, (ybt0 - ybt)/ybt)), na.rm = TRUE)
           cont        <- (dist > npl.tol & t < (npl.maxit - 1))
           t           <- t + 1
           REt$dist    <- dist
           ctr[[par0]] <- thetat
           resTO[[t]]  <- REt
-        },
-        error = function(e){
-          thetat[1]   <- -4.5
-          fnewybTBT(ybt, Gybt, Glist, igr, M, X, thetat, K, n, npl.tol, npl.maxit)
-          cont        <- TRUE
-          t           <- t + 1
-          ctr[[par0]] <- thetat
-          steps[[t]]  <- NULL
-        })
+        # },
+        # error = function(e){
+        #   thetat[1]   <- -4.5
+        #   fnewybTBT(ybt, Gybt, Glist, igr, M, X, thetat, K, n, npl.tol, npl.maxit)
+        #   cont        <- TRUE
+        #   t           <- t + 1
+        #   ctr[[par0]] <- thetat
+        #   resTO[[t]]  <- NULL
+        # })
       }
       llh           <- -REt[[like]]
       theta         <- c(1/(1 + exp(-thetat[1])), thetat[2:(K +1)], exp(thetat[K + 2]))
@@ -286,7 +302,6 @@ sart <- function(formula,
     if (npl.maxit == t) {
       warning("The maximum number of iterations of the NPL algorithm has been reached.")
     }
-    
     covt       <- fcovSTI(n = n, Gyb = Gybt, theta = thetat, X = X, K = K, G = Glist,
                           igroup = igr, ngroup = M, ccov = cov)
   } else{
