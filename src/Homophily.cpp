@@ -1,5 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo, RcppProgress, RcppDist, RcppEigen, RcppNumerical)]]
 #include <RcppArmadillo.h>
+#define NDEBUG
 #include <progress.hpp>
 #include <progress_bar.hpp>
 #include <mvnorm.h>
@@ -801,8 +802,8 @@ List fhomobetap(Eigen::VectorXd theta,
                const arma::mat& indexgr,
                const int& M,       
                const int& maxit = 300, 
-               const double& eps_f = 1e-6, 
-               const double& eps_g = 1e-5){
+               const double& eps_f = 1e-15, 
+               const double& eps_g = 1e-15){
 
   int n         = sum(nvec);
   int Kx        = dx.n_cols;
