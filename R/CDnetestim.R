@@ -56,9 +56,10 @@
 #' Houndetoungan, E. A. (2022). Count Data Models with Social Interactions under Rational Expectations. Available at SSRN 3721250, \doi{10.2139/ssrn.3721250}.
 #' @seealso \code{\link{sart}}, \code{\link{sar}}, \code{\link{simcdnet}}.
 #' @examples 
+#' \donttest{
 #' set.seed(123)
 #' # Groups' size
-#' nvec   <- sample(100:500, 2)
+#' nvec   <- rep(100, 2)
 #' M      <- length(nvec)
 #' n      <- sum(nvec)
 #' 
@@ -106,8 +107,8 @@
 #' rm(list = ls()[!(ls() %in% c("Glist", "data"))])
 #' 
 #' out   <- cdnet(formula = yt ~ x1 + x2, contextual = TRUE, Glist = Glist, 
-#'                data = data, Rbar = 10, estim.rho = TRUE, optimizer = "nlm")
-#' summary(out)
+#'                data = data, Rbar = 5, estim.rho = TRUE, optimizer = "nlm")
+#' summary(out)}
 #' @importFrom stats quantile
 #' @importFrom utils head
 #' @importFrom utils tail
@@ -517,6 +518,8 @@ cdnet    <- function(formula,
     colnames(var.comp$Omega) <- namecovt
   }
   
+  AIC                  <- 2*length(theta) - 2*llht
+  BIC                  <- length(theta)*log(n) - 2*llht
   
   INFO                 <- list("M"          = M,
                                "n"          = n,
@@ -527,7 +530,9 @@ cdnet    <- function(formula,
                                "Rbar"       = Rbar,
                                "Rmax"       = Rmax,
                                "log.like"   = llht, 
-                               "npl.iter"   = t)
+                               "npl.iter"   = t,
+                               "AIC"        = AIC,
+                               "BIC"        = BIC)
   
   out                  <- list("info"       = INFO,
                                "estimate"   = list(parms = theta, marg.effects = meffects),
@@ -657,6 +662,8 @@ cdnet    <- function(formula,
   formula              <- x$info$formula
   Kz                   <- x$info$Kz
   estim.rho            <- x$info$estim.rho
+  AIC                  <- x$info$AIC
+  BIC                  <- x$info$BIC
   
   parms                <- x$estimate$parms
   coef                 <- parms[1:(1 + Kz)]
@@ -684,11 +691,11 @@ cdnet    <- function(formula,
   cat("Count data Model with Social Interactions\n\n")
   cat("Call:\n")
   print(formula)
-  cat("\nMethod: Nested pseudo-likelihood (NPL) \nIteration: ", iteration, "\n\n")
+  cat("\nMethod: Nested pseudo-likelihood (NPL) \nIteration: ", iteration, sep = "", "\n\n")
   cat("Network:\n")
-  cat("Number of groups         : ", M, "\n")
-  cat("Sample size              : ", n, "\n")
-  cat("Average number of friends: ", sum(nfr)/n, "\n\n")
+  cat("Number of groups         : ", M, sep = "", "\n")
+  cat("Sample size              : ", n, sep = "", "\n")
+  cat("Average number of friends: ", sum(nfr)/n, sep = "", "\n\n")
   
   cat("Coefficients:\n")
   do.call("print", out_print)
@@ -696,19 +703,20 @@ cdnet    <- function(formula,
   cat("\nMarginal Effects:\n")
   do.call("print", out_print.meff)
   cat("---\nSignif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n")
-  cat("Rbar: ", Rbar, "\n")
+  cat("Rbar: ", Rbar, sep = "", "\n")
   if(Rbar > 1){
-    cat("delta: ", delta[1:(Rbar - 1)], "\n")
+    cat("delta:", delta[1:(Rbar - 1)], sep = " ", "\n")
   }
-  cat("deltabar: ", delta[Rbar])
+  cat("deltabar: ", delta[Rbar], sep = "")
   if(estim.rho){
-    cat(" -- rho: ", delta[Rbar+1], "\n")
-    cat("Wald test H0: rho = 0, Prob = ", 1 - pchisq(1/x$cov$parms[Kz+Rbar+2,Kz+Rbar+2], df = 1), "\n")
+    cat(" -- rho: ", delta[Rbar+1], sep = "", "\n")
+    cat("Wald test H0: rho = 0, Prob = ", 1 - pchisq(1/x$cov$parms[Kz+Rbar+2,Kz+Rbar+2], df = 1), sep = "", "\n")
   } else{
     cat("\n")
   }
 
-  cat("log pseudo-likelihood: ", llh, "\n")
+  cat("log pseudo-likelihood: ", llh, sep = "", "\n")
+  cat("AIC: ", AIC, " -- BIC: ", BIC, sep = "", "\n")
   
   invisible(x)
 }
