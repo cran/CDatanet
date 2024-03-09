@@ -46,7 +46,7 @@
 #' of \eqn{\theta} and \eqn{\bar{y}}{yb}. The solution converges when the \eqn{L_1}{L} distance
 #' between two consecutive \eqn{\theta} and \eqn{\bar{y}}{yb} is less than a tolerance. \cr
 #' The argument \code{npl.ctr} is an optional list which contain
-#' \itemize{
+#' \describe{
 #' \item{tol}{ the tolerance of the NPL algorithm (default 1e-4),}
 #' \item{maxit}{ the maximal number of iterations allowed (default 500),}
 #' \item{print}{ a boolean indicating if the estimate should be printed at each step.}

@@ -20,7 +20,7 @@ Lee, L. F. (2004). Asymptotic distributions of quasi-maximum likelihood estimato
 
 Xu, X., & Lee, L. F. (2015). Maximum likelihood estimation of a spatial autoregressive Tobit model. \emph{Journal of Econometrics}, 188(1), 264-280, \doi{10.1016/j.jeconom.2015.05.004}.
 
-Yan, T., Jiang, B., Fienberg, S. E., & Leng, C. (2019). Statistical inference in a directed network model with covariates. \emph{Journal of the American Statistical Association}, 114(526), 857-868, \doi{https://doi.org/10.1080/01621459.2018.1448829}.
+Yan, T., Jiang, B., Fienberg, S. E., & Leng, C. (2019). Statistical inference in a directed network model with covariates. \emph{Journal of the American Statistical Association}, 114(526), 857-868, \doi{10.1080/01621459.2018.1448829}.
 }
 \seealso{
 Useful links:
@@ -31,6 +31,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Elysee Aristide Houndetoungan \email{ariel92and@gmail.com}
+\strong{Maintainer}: Aristide Houndetoungan \email{ahoundetoungan@gmail.com}
 
 }
