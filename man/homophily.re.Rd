@@ -2,7 +2,7 @@
 % Please edit documentation in R/homophily.re.R
 \name{homophily.re}
 \alias{homophily.re}
-\title{Estimate Network Formation Model with Degree Heterogeneity as Random Effects}
+\title{Estimating network formation models with degree heterogeneity: the Bayesian random effect approach}
 \usage{
 homophily.re(
   network,
@@ -48,7 +48,7 @@ number of observations, etc.}
 \item{init}{returned list of starting values.}
 }
 \description{
-\code{homophily.re} implements a Bayesian Probit estimator for network formation model with homophily. The model includes degree heterogeneity as random effects (see details).
+\code{homophily.re} implements a Bayesian Probit estimator for network formation model with homophily. The model includes degree heterogeneity using random effects (see details).
 }
 \details{
 Let \eqn{p_{ij}}{Pij} be a probability for a link to go from the individual \eqn{i} to the individual \eqn{j}.

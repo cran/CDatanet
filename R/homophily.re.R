@@ -1,4 +1,4 @@
-#' @title Estimate Network Formation Model with Degree Heterogeneity as Random Effects
+#' @title Estimating network formation models with degree heterogeneity: the Bayesian random effect approach
 #' @param network matrix or list of sub-matrix of social interactions containing 0 and 1, where links are represented by 1.
 #' @param formula an object of class \link[stats]{formula}: a symbolic description of the model. The `formula` should be as for example \code{~ x1 + x2}
 #' where `x1`, `x2` are explanatory variable of links formation.
@@ -19,7 +19,7 @@
 #'     \item{posterior}{list of simulations from the posterior distribution.}
 #'     \item{init}{returned list of starting values.}
 #' @description 
-#' `homophily.re` implements a Bayesian Probit estimator for network formation model with homophily. The model includes degree heterogeneity as random effects (see details).
+#' `homophily.re` implements a Bayesian Probit estimator for network formation model with homophily. The model includes degree heterogeneity using random effects (see details).
 #' @details
 #' Let \eqn{p_{ij}}{Pij} be a probability for a link to go from the individual \eqn{i} to the individual \eqn{j}.
 #' This probability is specified for two-way effect models (`fe.way = 2`) as
