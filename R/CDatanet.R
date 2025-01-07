@@ -1,13 +1,13 @@
-#' @title The CDatanet package
-#' @description The \pkg{CDatanet} package simulates and estimates peer effect models and network formation models. The class of peer effect models includes linear-in-means models (Lee, 2004; Lee et al., 2010), 
+#' @title The CDatanet Package
+#' @description The \pkg{CDatanet} package simulates and estimates peer effect models and network formation models. The peer effect models include linear-in-means models (Lee, 2004; Lee et al., 2010), 
 #' Tobit models (Xu and Lee, 2015), and discrete numerical data models (Houndetoungan, 2024). 
-#' The network formation models include pair-wise regressions with degree heterogeneity (Graham, 2017; Yan et al., 2019) and exponential random graph models (Mele, 2017).
-#' To make the computations faster \pkg{CDatanet} uses \code{C++} through the \pkg{Rcpp} package (Eddelbuettel et al., 2011). 
+#' The network formation models include pairwise regressions with degree heterogeneity (Graham, 2017; Yan et al., 2019) and exponential random graph models (Mele, 2017).
+#' To enhance computation speed, \pkg{CDatanet} uses \code{C++} via the \pkg{Rcpp} package (Eddelbuettel et al., 2011).
 #'
 #' @references 
 #' Eddelbuettel, D., & Francois, R. (2011). \pkg{Rcpp}: Seamless \R and \code{C++} integration. \emph{Journal of Statistical Software}, 40(8), 1-18, \doi{10.18637/jss.v040.i08}.
 #' @references 
-#' Houndetoungan, E. A. (2024). Count Data Models with Social Interactions under Rational Expectations. Available at SSRN 3721250, \doi{10.2139/ssrn.3721250}.
+#' Houndetoungan, E. A. (2024). Count Data Models with Heterogeneous Peer Effects. Available at SSRN 3721250, \doi{10.2139/ssrn.3721250}.
 #' @references  
 #' Lee, L. F. (2004). Asymptotic distributions of quasi-maximum likelihood estimators for spatial autoregressive models. \emph{Econometrica}, 72(6), 1899-1925, \doi{10.1111/j.1468-0262.2004.00558.x}.
 #' @references  
