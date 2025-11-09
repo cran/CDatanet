@@ -134,7 +134,7 @@ homophily.fe <- function(network,
   }
   N               <- sum(Nvec)
   
-  quiet(gc())
+  invisible(gc())
   if (sum(!((network == 0) | (network == 1))) != 0) {
     stop("Network should contain only 0 and 1.")
   }
@@ -148,7 +148,7 @@ homophily.fe <- function(network,
   index   <- cbind(tmp2, tmp1) 
   rm(list = c("tmp1", "tmp2"))
   
-  quiet(gc())
+  invisible(gc())
   indexgr <- matrix(c(cumsum(c(0, nvec[-M])), cumsum(nvec) - 1), ncol = 2) #start group, end group
   # INDEXgr         <- matrix(c(cumsum(c(0, Nvec[-M])), cumsum(Nvec) - 1), ncol = 2)
   # Formula to data
@@ -159,13 +159,13 @@ homophily.fe <- function(network,
                                      type = "network", theta0 =  NA)
     if(!missing(data)) {
       rm("data")
-      quiet(gc())
+      invisible(gc())
     }
     formula       <- f.t.data$formula
     dX            <- f.t.data$X
     if(nrow(dX) != N && nrow(dX) != 0) stop("The number of observations in X does not match the network.")
     rm("f.t.data")
-    quiet(gc())
+    invisible(gc())
     hasX          <- TRUE
   }
   coln            <- colnames(dX)
@@ -233,7 +233,7 @@ homophily.LogitFE <- function(network, fe.way, M, nvec, n, N, Nvec, index, index
   
   #starting value
   initllh         <- NULL
-  quiet(gc())
+  invisible(gc())
   if(is.null(init)){
     if(print) cat("starting point searching\n")
     beta          <- NULL
@@ -299,12 +299,12 @@ homophily.LogitFE <- function(network, fe.way, M, nvec, n, N, Nvec, index, index
       }
     } 
   }
-  quiet(gc())
+  invisible(gc())
   
   theta           <- 1*init
   
   estim           <- NULL
-  quiet(gc())
+  invisible(gc())
   
   if(print) {
     cat("maximizer searching\n")
@@ -340,20 +340,41 @@ homophily.LogitFE <- function(network, fe.way, M, nvec, n, N, Nvec, index, index
   
   # export degree
   theta           <- c(estim$estimate)
-  names(theta)    <- names(init)
+  # names(theta)    <- names(init)
   beta            <- head(theta, K)
   if(hasX){
     names(beta)   <- coln
   }
+  
+  tpname          <- NULL
+  if (M == 1) {
+    tpname        <- list(1:n)
+  } else {
+    tpname        <- lapply(1:M, function(m) lapply(1:nvec[m], function(s) paste0(m, "_", s)))
+  }
   mu              <- theta[(K + 1):(K + n)]
+  names(mu)       <- paste0("mu_", unlist(tpname))
   nu              <- NULL
   if(fe.way == 2){
     nu            <- tail(theta, n - M)
     nu            <- unlist(lapply(1:M, function(x) c(nu[(indexgr[x, 1] + 2 - x):(indexgr[x, 2] + 1 - x)], 0))) 
+    names(nu)       <- paste0("nu_", unlist(tpname))
   }
   
   estim$estimate  <- c(estim$estimate)
   estim$gradient  <- c(estim$gradient)
+  if (fe.way == 2) {
+    names(estim$estimate) <- c(names(beta), paste0("mu_", unlist(tpname)),
+                                                        paste0("nu_", unlist(lapply(1:M, function(m) head(tpname[[m]], nvec[m] - 1)))))
+  } else {
+    names(estim$estimate) <- c(names(beta), paste0("mu_", unlist(tpname)))
+    
+  }
+  if (!is.null(estim$gradient)) {
+    names(estim$gradient) <- names(estim$estimate)
+  }
+  
+
   out             <- list("model.info"     = list("model"       = "logit", 
                                                   "sym.network" = FALSE,
                                                   "fe.way"      = fe.way, 
@@ -400,7 +421,7 @@ homophily.LogitFESym <- function(network, M, nvec, n, N, Nvec, index, indexgr, f
   
   #starting value
   initllh         <- NULL
-  quiet(gc())
+  invisible(gc())
   if(is.null(init)){
     if(print) cat("starting point searching\n")
     beta          <- NULL
@@ -444,13 +465,12 @@ homophily.LogitFESym <- function(network, M, nvec, n, N, Nvec, index, indexgr, f
       stopifnot(length(init) == (K + n))
     } 
   }
-  
-  quiet(gc())
+  invisible(gc())
   
   theta           <- 1*init
   
   estim           <- NULL
-  quiet(gc())
+  invisible(gc())
   
   if(print) {
     cat("maximizer searching\n")
@@ -472,15 +492,27 @@ homophily.LogitFESym <- function(network, M, nvec, n, N, Nvec, index, indexgr, f
   
   # export degree
   theta           <- c(estim$estimate)
-  names(theta)    <- names(init)
+  # names(theta)    <- names(init)
   beta            <- head(theta, K)
   if(hasX){
     names(beta)   <- coln
   }
+  
+  tpname          <- NULL
+  if (M == 1) {
+    tpname        <- 1:n
+  } else {
+    tpname        <- lapply(1:M, function(m) lapply(1:nvec[m], function(s) paste0(m, "_", s)))
+  }
   mu              <- tail(theta, n)
+  names(mu)       <- paste0("mu_", unlist(tpname))
   
   estim$estimate  <- c(estim$estimate)
   estim$gradient  <- c(estim$gradient)
+  names(estim$estimate)   <- c(names(beta), paste0("mu_", tpname))
+  if (!is.null(estim$gradient)) {
+    names(estim$gradient) <- names(estim$estimate)
+  }
   
   out             <- list("model.info"     = list("model"           = "logit", 
                                                   "sym.network"     = TRUE,
